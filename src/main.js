@@ -6,21 +6,21 @@ import Vuetify from 'vuetify'
 
 import router from './router'
 import store from './store/index'
-import { sync } from 'vuex-router-sync'
+import {sync} from 'vuex-router-sync'
 
 import './stylus/main.styl'
 
-sync(store, router)
+sync(store, router);
 
-Vue.use(Vuetify)
-Vue.use(VueRes)
+Vue.use(Vuetify);
+Vue.use(VueRes);
 
 new Vue({
-  el: '#app',
-  router,
-  store,
-  template: '<App/>',
-  components: {App},
-  render: h => h(App)
-})
+    el: '#app',
+    router,
+    store,
+    template: '<App/>',
+    components: {App},
+    render: h => h(App)
+});
 

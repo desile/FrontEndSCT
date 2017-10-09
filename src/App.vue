@@ -6,20 +6,19 @@
                         persistent
                         v-model="drawer"
                         light
-                        enable-resize-watcher
-                >
+                        enable-resize-watcher>
                     <v-list dense>
                         <v-list-tile @click="$router.push(item.url)" v-for="item in menuItems" :key="item.url">
-                            
+
                             <v-list-tile-action>
                                 <v-icon>{{item.icon}}</v-icon>
                             </v-list-tile-action>
                             <v-list-tile-content>
                                 <v-list-tile-title>
-                                {{item.label}}
+                                    {{item.label}}
                                 </v-list-tile-title>
                             </v-list-tile-content>
-                            
+
                         </v-list-tile>
                     </v-list>
                 </v-navigation-drawer>
@@ -29,9 +28,9 @@
                 </v-toolbar>
                 <main>
                     <v-container fluid>
-                    <div class="page">  <!-- Надо ли этот див --> 
-                        <router-view></router-view>
-                    </div>
+                        <div class="page">  <!-- Надо ли этот див -->
+                            <router-view></router-view>
+                        </div>
                     </v-container>
                 </main>
                 <v-footer class="indigo">
@@ -43,20 +42,19 @@
 </template>
 
 <script>
-  export default {
+    export default {
+        data() {
+            return {
+                drawer: true,
+                menuItems: [
+                    {url: '/', icon: 'home', label: 'Главная'},
+                    {url: '/add_question', icon: 'school', label: 'Добавить вопрос'},
+                    {url: '/add_answer', icon: 'class', label: 'Добавить ответ'},
+                    {url: '/check_answer', icon: 'class', label: 'Проверка ответа'},
 
-    data () {
-      return {
-        drawer: true,
-        menuItems: [
-          {url: '/', icon: 'home', label: 'Главная'},
-          {url: '/add_question', icon: 'school', label: 'Добавить вопрос'},
-          {url: '/add_answer', icon: 'class', label: 'Добавить ответ'},
-          {url: '/check_answer', icon: 'class', label: 'Проверка ответа'},
-
-        ]
-      }
-    },
-    name: 'app'
-  } 
+                ]
+            }
+        },
+        name: 'app'
+    }
 </script>
