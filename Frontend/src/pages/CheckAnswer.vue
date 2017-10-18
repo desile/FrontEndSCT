@@ -25,6 +25,9 @@
                 <v-btn block @click="check">Проверить</v-btn>
             </v-flex>
         </v-layout>
+        <v-layout row>
+            Score: {{score}}
+        </v-layout>
     </div>
 </template>
 <script>
@@ -43,12 +46,13 @@
         },
         methods: {
             check() {
+                let self = this
                 Vue.http.post('http://localhost:8000/answer/check', {
                     'answer': this.sentence,
                     'question_id': this.questionId
                 }).then(response => {
                     if (response.body) {
-                        console.log(response.body)
+                        self.score = response.body.result
                     }
                 });
             }
@@ -56,7 +60,8 @@
         data() {
             return {
                 sentence: '',
-                questionId: ''
+                questionId: '',
+                score: 0
             }
         }
     }

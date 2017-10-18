@@ -96,7 +96,7 @@ class AnswerResource(object):
                 child_link['normal_form'] = link['child']['normal_form']
 
             addLinkToDB = db.prepare(
-                "INSERT INTO links (parent, parent_normal, child, child_normal, relation, weight, answer_id) VALUES ($1, $2, $3, $4, $5)")
+                "INSERT INTO links (parent, parent_normal, child, child_normal, relation, weight, answer_id) VALUES ($1, $2, $3, $4, $5, $6, $7)")
             addLinkToDB(
                 link['parent']['word'],
                 link['parent']['normal_form'],
@@ -129,16 +129,16 @@ class CheckAnswerResource(object):
         for el in sentenceResult:
             if el['link_name'] != 'ROOT':
                 checkingLinks.append({
-                    'parent': sentenceResult[int(el['parent_id'])]['word'],
-                    'child': el['word'],
+                    'parent': sentenceResult[int(el['parent_id'])]['normal_form'],
+                    'child': el['normal_form'],
                     'relation': el['link_name']
                 })
-                checkingWords.append(el['word'])
+                checkingWords.append(el['normal_form'])
 
         canonicalLinks = []
         fullWeight = 0
         linksQuery = db.prepare(
-            'SELECT l.parent, l.child, l.relation, l.weight FROM links l JOIN answers a ON a.id = l.answer_id JOIN questions q ON q.id = a.question_id WHERE q.id = $1')
+            'SELECT DISTINCT l.parent_normal, l.child_normal, l.relation, l.weight FROM links l JOIN answers a ON a.id = l.answer_id JOIN questions q ON q.id = a.question_id WHERE q.id = $1')
         for row in linksQuery(questionId):
             canonicalLinks.append({
                 'parent': row[0],
@@ -149,22 +149,25 @@ class CheckAnswerResource(object):
             fullWeight += row[3]
 
         result = 0
+        matches = []
         for canonicalLink in canonicalLinks:
             if canonicalLink['relation'] is None:
                 for word in checkingWords:
-                    if word == canonicalLink['parent']:
+                    if word.lower() == canonicalLink['parent'].lower():
                         result += canonicalLink['weight']
+                        matches.append(canonicalLink)
             else:
                 for checkingLink in checkingLinks:
                     # Нужно сравнивать нормальные формы приведенные к лоуверкейсу
-                    if checkingLink['parent'] == canonicalLink['parent']:
-                        if checkingLink['child'] == canonicalLink['child']:
+                    if checkingLink['parent'].lower() == canonicalLink['parent'].lower():
+                        if checkingLink['child'].lower() == canonicalLink['child'].lower():
                             if checkingLink['relation'] == canonicalLink['relation']:
                                 result += canonicalLink['weight']
+                                matches.append(canonicalLink)
 
         print(canonicalLinks)
         print(checkingLinks)
-        resp.body = json.dumps({'result': result / fullWeight})
+        resp.body = json.dumps({'result': result / fullWeight, 'matches': matches})
 
 
 class SemanticResource(object):

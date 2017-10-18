@@ -34,7 +34,7 @@
                     v-model="selectedLinks"
                     select-all
                     hide-actions
-                    selected-key="words"
+                    selected-key="id"
                     no-data-text="Проведите анализ или добавьте слова вручную"
                     class="elevation-1"
             >
@@ -125,6 +125,7 @@
                     for (var i = 0; i < words.length; i++) {
                         if (words[i]['link_name'] !== 'ROOT') {
                             self.links.push({
+                                'id': i,
                                 'child': {
                                     'word': words[i]['word'],
                                     'POS': words[i]['pos_tag'],
