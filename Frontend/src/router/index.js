@@ -2,8 +2,9 @@ import Vue from 'vue'
 import Router from 'vue-router'
 import AddAnswerPage from '../pages/AddAnswerPage.vue'
 import HomePage from '../pages/HomePage.vue'
-import AddQuestion from '../pages/AddQuestion.vue'
-import CheckAnswer from '../pages/CheckAnswer.vue'
+import QuestionsPage from '../pages/QuestionsPage.vue'
+import CheckAnswer from '../pages/CheckAnswerPage.vue'
+import WizardPage from '../pages/WizardPage.vue'
 
 Vue.use(Router);
 
@@ -15,9 +16,9 @@ export default new Router({
             component: AddAnswerPage
         },
         {
-            path: '/add_question',
+            path: '/questions',
             name: 'addQuestion',
-            component: AddQuestion
+            component: QuestionsPage
         },
         {
             path: '/check_answer',
@@ -28,6 +29,11 @@ export default new Router({
             path: '/',
             name: 'homePage',
             component: HomePage
+        },
+        {
+            path: '/wizard',
+            name: 'wizard',
+            component: WizardPage
         }
     ]
 })

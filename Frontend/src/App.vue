@@ -1,6 +1,5 @@
 <template>
     <div class="app">
-        <v-app id="inspire">
             <v-app id="example-1" toolbar footer>
                 <v-navigation-drawer
                         persistent
@@ -37,7 +36,6 @@
                     <span class="white--text">&copy; 2017</span>
                 </v-footer>
             </v-app>
-        </v-app>
     </div>
 </template>
 
@@ -48,10 +46,10 @@
                 drawer: true,
                 menuItems: [
                     {url: '/', icon: 'home', label: 'Главная'},
-                    {url: '/add_question', icon: 'school', label: 'Добавить вопрос'},
-                    {url: '/add_answer', icon: 'class', label: 'Добавить ответ'},
+                    {url: '/wizard', icon: 'school', label: 'Wizard'},
+                    {url: '/questions', icon: 'school', label: 'Список вопросов'},
+                    {url: '/add_answer', icon: 'class', label: 'Управление ответами'},
                     {url: '/check_answer', icon: 'class', label: 'Проверка ответа'},
-
                 ]
             }
         },

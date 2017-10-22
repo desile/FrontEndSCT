@@ -73,6 +73,3 @@ def getDomen(word):
     domen_list = []
     for domen in domen_query:
         domen_list.append(domen[0])
-
-
-print(getNormalForm('данных', 'NOUN'))

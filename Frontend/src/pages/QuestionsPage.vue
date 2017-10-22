@@ -1,5 +1,5 @@
 <template>
-    <div class="addQuestion">
+    <div class="questionsPage">
         <v-layout row>
             <v-flex xs10>
                 <v-text-field
@@ -58,26 +58,4 @@
             }
         }
     }
-
-    // export default {
-    //     data () {
-    //       	return {
-    //       		question: '',
-    //       		questionTableHeaders: [
-    //        			{text: 'Вопрос', value: 'name', align: 'left'},
-    //        			{text: 'Количество ответов', value: 'answersCount'}
-    //        		],
-    //           questionList: []
-    //       	}
-    //     },
-    //     methods: {
-    //     	add(){
-    //     		this.questionList.push({
-    //     			name: this.question,
-    //     			answersCount: 0
-    //     		})
-    //     		this.question = ''
-    //     	}
-    //     }
-    //   }
 </script>
