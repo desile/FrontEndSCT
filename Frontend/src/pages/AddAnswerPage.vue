@@ -13,101 +13,17 @@
                 ></v-select>
             </v-flex>
         </v-layout>
-        <v-data-table
-                v-if="questionId"
-                v-bind:headers="relationsTableHeader"
-                v-bind:items="relations"
-                v-model="selectedRelations"
-                select-all
-                hide-actions
-                selected-key="id"
-                no-data-text="Проведите анализ или добавьте связи вручную"
-                class="elevation-1"
-        >
-            <template slot="items" scope="props">
-                <td class="text-xs-right">
-                    <v-checkbox
-                            primary
-                            v-model="props.selected"
-                    ></v-checkbox>
-                </td>
-                <td>{{ props.item.words.map(w => w['value']).join(' ') }}</td>
-                <td class="text-xs-right">
-                    <v-edit-dialog lazy>
-                        {{ props.item.weight }}
-                        <v-text-field
-                                type="number"
-                                slot="input"
-                                label="Edit"
-                                v-model="props.item.weight"
-                                single-line counter="counter"
-                        ></v-text-field>
-                    </v-edit-dialog>
-                </td>
-                <td class="text-xs-right">{{ props.item.relation }}</td>
-                <td class="text-xs-right">
-                    <v-edit-dialog lazy>
-                        {{ props.item.group }}
-                        <v-text-field
-                                type="number"
-                                slot="input"
-                                label="Edit"
-                                v-model="props.item.group"
-                                single-line counter="counter"
-                        ></v-text-field>
-                    </v-edit-dialog>
-                </td>
-            </template>
-
-            <!--<template slot="footer">-->
-            <!--<tr>-->
-            <!--<td style="width:20px"></td>-->
-            <!--<td style="padding-left: 20px">-->
-            <!--<v-text-field @keyup.enter="addLink" v-model="newWord" label="Слово"></v-text-field>-->
-            <!--</td>-->
-            <!--<td style="padding-left: 10% ;width: 10px">-->
-            <!--<v-text-field @keyup.enter="addLink" v-model="newWeight" label="Вес"></v-text-field>-->
-            <!--</td>-->
-            <!--<td style="padding-left: 3% ;width: 10px">custom</td>-->
-            <!--<td style="padding-left: 4% ;width: 10px">false</td>-->
-            <!--</tr>-->
-            <!--</template>-->
-        </v-data-table>
-        <v-layout row>
-            <v-flex xs10>
-                <v-text-field
-                        v-model="sentence"
-                        name="input-1"
-                        label="Ввод предложения"
-                        id="testing"
-                ></v-text-field>
-            </v-flex>
-            <v-flex xs2>
-                <v-btn block @click="buildRelations">Анализ</v-btn>
-            </v-flex>
-        </v-layout>
-        <template>
-            <div class="text-xs-center">
-                <v-progress-circular indeterminate v-if="loading" v-bind:size="80" v-bind:width="5" style="color: royalblue"></v-progress-circular>
-            </div>
+        <div v-if="questionId">
             <v-data-table
-                    v-if="!loading && questionId"
                     v-bind:headers="relationsTableHeader"
-                    v-bind:items="newRelations"
-                    v-model="newSelectedRelations"
-                    select-all
+                    v-bind:items="relations"
+                    v-model="selectedRelations"
                     hide-actions
                     selected-key="id"
                     no-data-text="Проведите анализ или добавьте связи вручную"
                     class="elevation-1"
             >
                 <template slot="items" scope="props">
-                    <td class="text-xs-right">
-                        <v-checkbox
-                                primary
-                                v-model="props.selected"
-                        ></v-checkbox>
-                    </td>
                     <td>{{ props.item.words.map(w => w['value']).join(' ') }}</td>
                     <td class="text-xs-right">
                         <v-edit-dialog lazy>
@@ -150,27 +66,115 @@
                 <!--</tr>-->
                 <!--</template>-->
             </v-data-table>
-        </template>
-        <v-layout row>
-            <v-flex xs10></v-flex>
-            <v-flex xs2>
-                <v-btn block @click="save">сохранить</v-btn>
-            </v-flex>
-        </v-layout>
-        <template>
-            <v-data-table
-                    :headers="answerTableHeader"
-                    :items="answers"
-                    hide-actions
-                    no-data-text="Ответы отсутствуют"
-                    class="elevation-1"
-            >
-                <template slot="items" scope="props">
-                    <td>{{ props.item.answer }}</td>
-                    <td class="text-xs-right">{{ props.item.linkCount }}</td>
-                </template>
-            </v-data-table>
-        </template>
+            <v-layout row>
+                <div class="headline" style="color: royalblue; margin-top: 30px">
+                    Добавление новых связей
+                </div>
+            </v-layout>
+            <v-layout row>
+                <v-flex xs10>
+                    <v-text-field
+                            v-model="sentence"
+                            name="input-1"
+                            label="Ввод предложения"
+                            id="testing"
+                    ></v-text-field>
+                </v-flex>
+                <v-flex xs2>
+                    <v-btn block @click="buildRelations">Анализ</v-btn>
+                </v-flex>
+            </v-layout>
+            <template>
+                <div class="text-xs-center">
+                    <v-progress-circular indeterminate v-if="loading" v-bind:size="80" v-bind:width="5" style="color: royalblue"></v-progress-circular>
+                </div>
+                <v-data-table
+                        v-if="!loading && questionId"
+                        v-bind:headers="relationsTableHeader"
+                        v-bind:items="newRelations"
+                        v-model="newSelectedRelations"
+                        select-all
+                        hide-actions
+                        selected-key="id"
+                        no-data-text="Проведите анализ или добавьте связи вручную"
+                        class="elevation-1"
+                >
+                    <template slot="items" scope="props">
+                        <td class="text-xs-right">
+                            <v-checkbox
+                                    primary
+                                    v-model="props.selected"
+                            ></v-checkbox>
+                        </td>
+                        <td>{{ props.item.words.map(w => w['value']).join(' ') }}</td>
+                        <td class="text-xs-right">
+                            <v-edit-dialog lazy>
+                                {{ props.item.weight }}
+                                <v-text-field
+                                        type="number"
+                                        slot="input"
+                                        label="Edit"
+                                        v-model="props.item.weight"
+                                        single-line counter="counter"
+                                ></v-text-field>
+                            </v-edit-dialog>
+                        </td>
+                        <td class="text-xs-right">{{ props.item.relation }}</td>
+                        <td class="text-xs-right">
+                            <v-edit-dialog lazy>
+                                {{ props.item.group }}
+                                <v-text-field
+                                        type="number"
+                                        slot="input"
+                                        label="Edit"
+                                        v-model="props.item.group"
+                                        single-line counter="counter"
+                                ></v-text-field>
+                            </v-edit-dialog>
+                        </td>
+                    </template>
+
+                    <!--<template slot="footer">-->
+                    <!--<tr>-->
+                    <!--<td style="width:20px"></td>-->
+                    <!--<td style="padding-left: 20px">-->
+                    <!--<v-text-field @keyup.enter="addLink" v-model="newWord" label="Слово"></v-text-field>-->
+                    <!--</td>-->
+                    <!--<td style="padding-left: 10% ;width: 10px">-->
+                    <!--<v-text-field @keyup.enter="addLink" v-model="newWeight" label="Вес"></v-text-field>-->
+                    <!--</td>-->
+                    <!--<td style="padding-left: 3% ;width: 10px">custom</td>-->
+                    <!--<td style="padding-left: 4% ;width: 10px">false</td>-->
+                    <!--</tr>-->
+                    <!--</template>-->
+                </v-data-table>
+            </template>
+            <v-layout row>
+                <v-flex xs10></v-flex>
+                <v-flex xs2>
+                    <v-btn block @click="save">сохранить</v-btn>
+                </v-flex>
+            </v-layout>
+            <v-layout row>
+                <div class="headline" style="color: royalblue; margin-bottom: 10px">
+                    Список эталонных ответов
+                </div>
+            </v-layout>
+            <template>
+                <v-data-table
+                        :headers="answerTableHeader"
+                        :items="answers"
+                        hide-actions
+                        no-data-text="Ответы отсутствуют"
+                        class="elevation-1"
+                >
+                    <template slot="items" scope="props">
+                        <td>{{ props.item.answer }}</td>
+                        <td class="text-xs-right">{{ props.item.linkCount }}</td>
+                    </template>
+                </v-data-table>
+            </template>
+        </div>
     </div>
 </template>
 
