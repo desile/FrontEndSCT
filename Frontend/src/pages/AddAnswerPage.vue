@@ -89,7 +89,7 @@
                     <v-progress-circular indeterminate v-if="loading" v-bind:size="80" v-bind:width="5" style="color: royalblue"></v-progress-circular>
                 </div>
                 <v-data-table
-                        v-if="!loading && questionId"
+                        v-if="!loading"
                         v-bind:headers="relationsTableHeader"
                         v-bind:items="newRelations"
                         v-model="newSelectedRelations"

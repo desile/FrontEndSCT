@@ -30,7 +30,11 @@ port = 8111  # E.g.
 proc = PipelineSyntaxNet(host, port)
 
 ADD_QUESTION_SQL = "INSERT INTO question (question) VALUES ($1) RETURNING id"
+GET_ALL_QUESTIONS_SQL = "SELECT id, question, (SELECT count(*) from answer a where a.question_id = q.id) FROM question q"
+
 ADD_ANSWER_SQL = "INSERT INTO answer (answer, question_id, etalon) VALUES ($1, $2, $3) RETURNING id"
+GET_ANSWERS_BY_QUESTION = "SELECT id, answer, (SELECT count(*) from words_relation l where l.answer_id = a.id) FROM answer a WHERE $1 = a.question_id"
+
 ADD_RELATION_SQL = "INSERT INTO words_relation (rel_name, weight, answer_id, group_number) VALUES ($1, $2, $3, $4) RETURNING id"
 ADD_WORD_SQL = "INSERT INTO word (word, normal_form, pos, relation_id, position) VALUES ($1, $2, $3, $4, $5) RETURNING id"
 
@@ -86,8 +90,7 @@ class QuestionResource(object):
         addQuestionToDB(question)
 
     def on_get(self, req, resp):
-        questionQuery = db.query(
-            'SELECT id, question, (SELECT count(*) from answer a where a.question_id = q.id) FROM question q')
+        questionQuery = db.query(GET_ALL_QUESTIONS_SQL)
         questionList = []
         for row in questionQuery:
             questionList.append({'id': row[0], 'question': row[1], 'answerCount': row[2]})
@@ -124,8 +127,7 @@ class AnswerResource(object):
     def on_get(self, req, resp):
         question_id = int(req.params['question_id'])
         answerList = []
-        answerQuery = db.prepare(
-            'SELECT id, answer, (SELECT count(*) from words_relation l where l.answer_id = a.id) FROM answer a WHERE $1 = a.question_id')
+        answerQuery = db.prepare(GET_ANSWERS_BY_QUESTION)
         for row in answerQuery(question_id):
             answerList.append({'id': row[0], 'answer': row[1], 'linkCount': row[2]})
         resp.body = json.dumps(answerList)
@@ -191,7 +193,7 @@ class BuildRelationsResource:
         answers_relations = []
         # unique_answers_links = []
         for idx, answer in enumerate(answers):
-            parsed_answer = [x for x in ud_parse(answer) if x['link_name'].lower() != 'punct']
+            parsed_answer = ud_parse(answer)
             if len(parsed_answer) == 1:
                 root = parsed_answer[0]
                 answers_relations.append({
@@ -205,6 +207,7 @@ class BuildRelationsResource:
             else:
                 for word_with_syntax in parsed_answer:
                     if word_with_syntax['link_name'].lower() != 'root':
+                        print(word_with_syntax)
                         new_relation = {
                             'relation': word_with_syntax['link_name'],
                             'weight': 1.0,
@@ -234,6 +237,8 @@ class BuildRelationsResource:
 
                         if unique_relation:
                             answers_relations.append(new_relation)
+
+        answers_relations = [x for x in answers_relations if x['relation'].lower() != 'punct']
 
         resp.body = json.dumps(answers_relations)
 
